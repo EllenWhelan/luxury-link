@@ -6,6 +6,26 @@ h1 {
   right: 5px;
   
 }
+.parent{
+  border: 3px solid #fff;
+    padding: 20px;
+}
+.child{
+  width: 50%;
+    float: left;
+    padding: 20px;
+    
+}
+
+
+label.boxes{
+  float: left;
+  clear: both;
+}
+
+div.temp{
+  display: inline;
+}
 h2{
   color: rgb(247, 243, 243);
    font-family: Arial, Helvetica, sans-serif;
@@ -56,7 +76,7 @@ text.logo
 .button:hover{
   color: grey
 }
-.submitButton{
+.submit{
   background-color: rgb(71, 181, 170); 
   border: none;
   color: white;
@@ -67,9 +87,10 @@ text.logo
   font-size: 16px;
   margin: 4px 2px;
   cursor: pointer;
+  text-align: center;
 }
 
-.submitButton:hover{
+.submit:hover{
   color: grey;
 }
 
