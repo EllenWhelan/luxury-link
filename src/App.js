@@ -1,7 +1,13 @@
 import React, { Component } from "react";
+//import DatePicker from "react-datepicker";
 import PropTypes from 'prop-types';
 import emailjs from 'emailjs-com';
 import "./App.css";
+//import "react-datepicker/dist/react-datepicker.css";
+//import moment from 'moment';
+//import 'bootstrap/dist/css/bootstrap.min.css';
+
+
 
 class App extends Component{
   constructor(){
@@ -14,25 +20,49 @@ class App extends Component{
         pub_filters: "",
         pub_category: "No category",
         bookingId: "",
-        bookingInfo: ""
+        bookingInfo: "",
+        valid: false
       };
       this.handleChange = this.handleChange.bind(this);
       this.handleClick = this.handleClick.bind(this);
       this.sendEmail = this.sendEmail.bind(this);
+      this.validate = this.validate.bind(this);
+
     }
   }
 
-//function to handle submit button click 
-async handleClick(e){
-  this.sendEmail(e, this.state.bookingId, this.state.bookingInfo, this.state.date,
-    this.state.startTime, this.state.endTime, this.state.pub_category);
+  validate() {
+    const errors = [];
 
-}
+    if (this.state.bookingId === undefined) {
+      errors.push("Booking ID can't be empty");
+    }
+    if (this.state.startTime === undefined) {
+      errors.push("Start time can't be empty");
+    }
+    if (this.state.endTime === undefined) {
+      errors.push("End time can't be empty");
+    }
+    if (this.state.date === undefined) {
+      errors.push("Date can't be empty");
+    }
+    return errors;
+  }
 
-//handles change of filter checkboxes and drop downs 
+  async handleClick(e){
+    this.sendEmail(e);
+  }
+
 async handleChange(event){
   const { name, value, type} = event.target;
-  console.log(name);
+
+  if(this.validate().length === 0){
+    this.state.valid = true;
+  }
+  if(this.validate().length > 0 ){
+    this.state.valid = false;
+  }
+
   if (type === "checkbox") {
     if (this.state.filters.includes(value)) {
       this.state.filters = this.state.filters.filter(f => f !== value);
@@ -40,60 +70,32 @@ async handleChange(event){
       this.state.filters.push(value);
     }
 
-    this.setState(
-      {
-        pub_filters: this.state.filters.join(", ")
-      },
+    this.setState({pub_filters: this.state.filters.join(", ")},
       () => this.updateBookingInfo()
     );
   }
   if (type === "select-one") {
-    this.setState(
-      {
-        pub_category: event.target.value
-      },
+    this.setState({pub_category: event.target.value},
       () => this.updateBookingInfo()
     );
   }
   if (type === "date"){
-    this.setState(
-      {
-        date : event.target.value
-      }
-    );
+    this.setState({date : event.target.value});
   }
   if (type === "time"){
     if (name === "startTime"){
       this.setState(
-        {
-          startTime : event.target.value
-        }
-      );
+        {startTime : event.target.value});
     }
     if (name === "endTime"){
-      this.setState(
-        {
-          endTime : event.target.value
-        }
-      );
+      this.setState({endTime : event.target.value});
     }
   }
   if (type === "text") {
-    if (name === "bookingId"){
-      this.setState(
-        {
-          bookingId : event.target.value
-        }
-      );
-    }
-    console.log("Booking ID : " + this.state.bookingId);
-    console.log("Date : " + this.state.date);
-    console.log("Time : " + this.state.time);
+      this.setState({bookingId : event.target.value});
   };
-
 }
 
-//funtion to keep track of booking info 
 updateBookingInfo() {
   if (this.state.pub_category.length !== 0)
   this.bookingInfo += `${this.state.pub_category}`;
@@ -106,49 +108,28 @@ updateBookingInfo() {
 }
 
 
-//function that uses email js to send email 
 async sendEmail(e){
   e.preventDefault();
-  //print outs to ensure email is succesfully sent 
-  console.log(process.env.REACT_APP_SERVICE_ID);
-  console.log(process.env.REACT_APP_TEMPLATE_ID);
-  console.log(process.env.REACT_APP_USER_ID);
-  console.log(process.env.REACT_APP_EMAILJS_RECEIVER);
-
-  //gathers parameters for email 
-  var receiverEmail = process.env.REACT_APP_EMAILJS_RECEIVER;
-  var senderEmail = process.env.REACT_APP_EMAILJS_SENDER;
-  var templateId = process.env.REACT_APP_TEMPLATE_ID;
-  var userId = process.env.REACT_APP_USER_ID;
-  var serviceId = process.env.REACT_APP_SERVICE_ID;
-  var bookingId = this.state.bookingId;
-  var startTime = this.state.startTime;
-  var endTime = this.state.endTime;
-  var date = this.state.date;
-  var category = this.state.pub_category.replace(/_/g, ' ');
-  var filters = this.state.bookingInfo;
 
   let templateParams = {
-    from_name: senderEmail,
-    to_name: receiverEmail,
-    bookingId: bookingId,
-    startTime: startTime,
-    endTime: endTime,
-    date: date,
-    category: category,
-    filters: filters
+    from_name: process.env.REACT_APP_EMAILJS_SENDER,
+    to_name: process.env.REACT_APP_EMAILJS_RECEIVER,
+    bookingId: this.state.bookingId,
+    startTime: this.state.startTime,
+    endTime: this.state.endTime,
+    date: this.state.date,
+    category: this.state.pub_category.replace(/_/g, ' '),
+    filters: this.state.bookingInfo
   }
 
   emailjs.send(process.env.REACT_APP_SERVICE_ID,process.env.REACT_APP_TEMPLATE_ID,templateParams,process.env.REACT_APP_USER_ID)
   .then((result) => {
     console.log(result.text);
   }, (error) => {
-
     console.log(error.text);
   });
 }
 
-//form for childminder requirements 
 render() {
   return (
     <div>
@@ -157,7 +138,8 @@ render() {
           <img className = "logo"  alt = "logo" src={"logo192.png"}  width = "220" height = "80"/>
         </h1>
         <text className = "title">Book a Minder</text>
-        <h2 className = "press"></h2>
+        <h2 className = "press">
+        </h2>
         <div className='parent'>
         <div className='child'>
               <label className='boxes'>
@@ -167,7 +149,7 @@ render() {
                 value="new_borns"
                 onChange={this.handleChange}
                 />{" "}
-                New borns
+                Newborns
               </label>
 
               <br />
@@ -178,87 +160,87 @@ render() {
                 value="non_smoker"
                 onChange={this.handleChange}
                 />{" "}
-                Non smoker
-              </label>
-          
-              <br />
-              <label className='boxes'>
-                <input
-                type="checkbox"
-                name="pub_filters"
-                value="first_aid"
-                onChange={this.handleChange}
-                />{" "}
-                First aid
+                Non-smoker
               </label>
 
-              <br />
-              <label className='boxes'>
-                <input
-                type="checkbox"
-                name="pub_filters"
-                value="own_transport"
-                onChange={this.handleChange}
-                />{" "}
-                Own Transport
-              </label>
+            <br />
+            <label className='boxes'>
+              <input
+              type="checkbox"
+              name="pub_filters"
+              value="first_aid"
+              onChange={this.handleChange}
+              />{" "}
+              First aid
+            </label>
 
-              <br />
-              <label className='boxes'>
-                <input
-                type="checkbox"
-                name="pub_filters"
-                value="qualifications"
-                onChange={this.handleChange}
-                />{" "}
-                Qualifications
-              </label>
+            <br />
+            <label className='boxes'>
+              <input
+              type="checkbox"
+              name="pub_filters"
+              value="own_transport"
+              onChange={this.handleChange}
+              />{" "}
+              Own Transport
+            </label>
 
-              <br />
-              <label className='boxes'>
-                <input
-                type="checkbox"
-                name="pub_filters"
-                value="overnights"
-                onChange={this.handleChange}
-                />{" "}
-                Overnights
-              </label>
+            <br />
+            <label className='boxes'>
+              <input
+              type="checkbox"
+              name="pub_filters"
+              value="qualifications"
+              onChange={this.handleChange}
+              />{" "}
+              Qualifications
+            </label>
 
-              <br />
-              <label className='boxes'>
-                <input
-                type="checkbox"
-                name="pub_filters"
-                value="evenings"
-                onChange={this.handleChange}
-                />{" "}
-                Evenings
-              </label>
+            <br />
+            <label className='boxes'>
+              <input
+              type="checkbox"
+              name="pub_filters"
+              value="overnights"
+              onChange={this.handleChange}
+              />{" "}
+              Overnights
+            </label>
 
-              <br />
-              <label className='boxes'>
-                <input
-                type="checkbox"
-                name="pub_filters"
-                value="mornings"
-                onChange={this.handleChange}
-                />{" "}
-                Mornings
-              </label>
+            <br />
+            <label className='boxes'>
+              <input
+              type="checkbox"
+              name="pub_filters"
+              value="evenings"
+              onChange={this.handleChange}
+              />{" "}
+              Evenings
+            </label>
 
-              <br />
-              <label className='boxes'>
-                <input
-                type="checkbox"
-                name="pub_filters"
-                value="all_day"
-                onChange={this.handleChange}
-                />{" "}
-                All day
-              </label>
+            <br />
+            <label className='boxes'>
+              <input
+              type="checkbox"
+              name="pub_filters"
+              value="mornings"
+              onChange={this.handleChange}
+              />{" "}
+              Mornings
+            </label>
+
+            <br />
+            <label className='boxes'>
+              <input
+              type="checkbox"
+              name="pub_filters"
+              value="all_day"
+              onChange={this.handleChange}
+              />{" "}
+              All day
+            </label>
         </div>
-       
+
         <div className='child'>
           <div className='categories'>
                   <label className='others'>Category: </label>
@@ -271,17 +253,18 @@ render() {
                   >
                     <option value="">none</option>
                     <option value="babysitter"> babysitter</option>
-                    <option value="babysitter_overnight">babysitter_overnight</option>
+                    <option value="overnight babysitter">overnight babysitter</option>
                     <option value="nanny">nanny</option>
                     <option value="childminder">childminder</option>
-                    <option value="day_care">day_care</option>
-                    <option value="maternity_nurse">maternity_nurse</option>
+                    <option value="day care">day care</option>
+                    <option value="maternity nurse">maternity nurse</option>
                   </select>
 
                   <br/>
           </div>
           <div className='bookingNumber'>
-                <label className='others'>Booking number:</label>
+                <label className='others'>
+                Booking number:</label>
                 <input className='rightInputs'
                 type="text"
                 name="bookingId"
@@ -291,8 +274,11 @@ render() {
 
                 <br/>
           </div>
-          <div className='dates'>      
-                <label className='others'> Date for Childcare: </label>
+          <div className='dates'>
+                <label className='others'>
+                Date for Childcare:
+                </label>
+
                 <input className='rightInputs'
                 type="date"
                 name="date"
@@ -302,7 +288,9 @@ render() {
           </div>
           <div className='times'>
                 <br/>
-                <label className='others'> Start Time</label>
+                <label className='others'>
+                Start Time:
+                </label>
                 <br/>
                 <input className='rightInputs'
                 type="time"
@@ -311,10 +299,12 @@ render() {
                 onChange={this.handleChange}
                 />
                 <br/>
-                
-                <label className='others'> End Time:</label>
+
+                <label className='others'>
+                End Time:
+                </label>
                   <br/>
-                <input 
+                <input
                 className='rightInputs'
                 type="time"
                 name="endTime"
@@ -323,8 +313,9 @@ render() {
                 />
           </div>
         </div>
-        
+
         <button
+          disabled={!(this.state.valid)}
           className = "submit"
           target="_blank"
           rel="noopener noreferrer"
@@ -343,7 +334,6 @@ render() {
       })();
       </script>
     </div>
-
   );
 }
 }
