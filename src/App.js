@@ -21,7 +21,8 @@ class App extends Component{
         pub_category: "No category",
         bookingId: "",
         bookingInfo: "",
-        valid: false
+        valid: false,
+        successTick: ""
       };
       this.handleChange = this.handleChange.bind(this);
       this.handleClick = this.handleClick.bind(this);
@@ -51,6 +52,12 @@ class App extends Component{
 
   async handleClick(e){
     this.sendEmail(e);
+    this.setState({successTick :
+    <text className = "title"
+      color={'green'}>
+       ✔
+    </text>
+ });
   }
 
 async handleChange(event){
@@ -125,10 +132,11 @@ async sendEmail(e){
   emailjs.send(process.env.REACT_APP_SERVICE_ID,process.env.REACT_APP_TEMPLATE_ID,templateParams,process.env.REACT_APP_USER_ID)
   .then((result) => {
     console.log(result.text);
-  }, (error) => {
-    console.log(error.text);
-  });
-}
+  },
+ (error) => {
+      console.log(error.text);
+    });
+  }
 
 render() {
   return (
@@ -264,7 +272,8 @@ render() {
           </div>
           <div className='bookingNumber'>
                 <label className='others'>
-                Booking number:</label>
+                Booking number: </label>
+                <br/>
                 <input className='rightInputs'
                 type="text"
                 name="bookingId"
@@ -323,6 +332,7 @@ render() {
           >
           Submit
         </button>
+          {this.state.successTick}
         </div>
       </form>
       <script type="text/javascript"
@@ -332,6 +342,7 @@ render() {
       (function(){
         emailjs.init(process.env.REACT_APP_USER_ID)
       })();
+
       </script>
     </div>
   );
