@@ -1,17 +1,21 @@
 # Sweng Group Project - Hotel Hook
-This project was completed as part of a Software Engineering Group Project. This repository contains hotel hook feature that allows a hotel guest to make a booking for childcare during their hotel stay, during the hotel booking process. This is done by a form pop up that redirects to the oogo website. Here the guest can make their childcare booking. 
-The luxury-hotel branch of this repository contains the system for another type of hotel, that makes the childcare booking for the guest on behalf of the guest based on the input values on a pop up form. This implementation sends an automated email to the hotel staff to inform them they must make the booking. 
+This project was completed as part of a Software Engineering Group Project. This repository contains hotel hook feature that allows a hotel guest to request a booking for childcare during their hotel stay, during the hotel booking process. 
+This repository contains the system for the type of hotel, that makes the childcare booking for the guest on behalf of the guest based on the input values on a pop up form. This implementation sends an automated email to the hotel staff to inform them they must make the booking. 
 
-The automated email service is implemented using emailJs. The full emailJs documentation can be found [here](https://www.emailjs.com/docs/)
 
-The repository containing the first part of this project can be found [here](https://github.com/EllenWhelan/flex-template-web).
+## Repositories
+The repository containing the favorites feature, the first part of this project can be found [here](https://github.com/EllenWhelan/flex-template-web).
 
+ The repository containing the first type of hotel, where a guest makes their own booking can be seen [here](https://github.com/EllenWhelan/link).
+
+ This repository contains the second type of hotel where the hotel takes care of the booking on behalf of the guest is located [here](https://github.com/EllenWhelan/luxury-link).
+
+## Documentation
 The oogo website can be found [here](https://oogo.herokuapp.com/).
 
-
-
-
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+The automated email service is implemented using emailJs. The full emailJs documentation can be found [here](https://www.emailjs.com/docs/)
 
 ## Available Scripts
 

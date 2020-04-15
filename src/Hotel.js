@@ -14,17 +14,13 @@ import './css/breadcrumb.css.map';
 import './css/_price.css';
 import './css/_price.css.map';
 
-
-
-
-
+//a dummy hotel site built for the purpose of testing our hook 
 class Hotel extends Component {
     render()
     {
         return(
             <div>
-            
-            
+                 
 	<header className="header_area">
 		<div className="top_menu row m0">
 			<div className="container">
