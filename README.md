@@ -2,7 +2,7 @@
 This project was completed as part of a Software Engineering Group Project. This repository contains hotel hook feature that allows a hotel guest to request a booking for childcare during their hotel stay, during the hotel booking process. 
 This repository contains the system for the type of hotel, that makes the childcare booking for the guest on behalf of the guest based on the input values on a pop up form. This implementation sends an automated email to the hotel staff to inform them they must make the booking. 
 
-**Note: This repository was created to encorporate work from the original link repository and the work completed by Leona and Ellen in this [repo](https://github.com/leonawolff/Hotel-Email). The work in this repo is not the sole work of Ellen, it is taken from Leona's repo which was private and didn't include the dummy hotel site. The app.js file is mostly taken from Leona's repo (a collaborative effort between Ellen and Leona, but primarily Leona's work) and the app.css file was completed by Ellen**
+**Note: This repository was created to encorporate work from the original link repository and the work completed by Leona and Ellen in this [repo](https://github.com/leonawolff/Hotel-Email). The work in this repo is not the sole work of Ellen, it is taken from Leona's repo which was private and didn't include the dummy hotel site. The app.js file is mostly taken from Leona's repo (a collaborative effort between Ellen and Leona) and the app.css file was completed by Ellen**
 
 
 ## Repositories
